@@ -11,52 +11,61 @@
 
   var balance = 1000;
 
-  function getInput() {
-    var input = $('#input').val() * 1;
-    return input;
+  function getAmount() {
+    var value = $('#input').val() * 1;
+    return value;
   }
 
-  function deposit() {
-    balance += getInput();
-    $('#display').text('$' + balance);
-    makeRow();
-    $td1.text('$' + getInput()).addClass('dep');
-    if(balance < 0){
-        $('#display').text('$' + '(' + balance * -1 + ')');
-        $td4.text('$' + '(' + balance * -1 + ')');
-      } else {
-        $td4.text('$' + balance);
-      }
-    $('#ledger > tbody').append($tr);
-  }
+function updateBalance() {
+  $('#balance').text('$' + balance + '.00');
+}
 
-  function withdraw() {
-    balance -= getInput();
-    makeRow();
-    if(balance >= 0){
-      $('#display').text('$' + balance);
-      $td2.text('$' + getInput()).addClass('wd');
-      $td4.text('$' + balance);
-      $('#ledger > tbody').append($tr);
+function formatCurrency(amount) {
+  if(amount !== null) {
+    if(amount >= 0) {
+      return '$' + amount + '.00';
     } else {
-      $('#display').text('$' + '(' + (balance - 50) * -1 + ')');
-      $td2.text('$' + getInput()).addClass('wd');
-      $td3.text('$' + 50).addClass('fee');
-      $td4.text('$' + '(' + (balance - 50) * -1 + ')');
-      $('#ledger > tbody').append($tr);
+      return '$('+ amount * -1 + '.00)';
     }
   }
 
-  var $td1, $td2, $td3, $td4, $tr;
+  return '';
+}
 
-  function makeRow() {
-    $td1 = $('<td>');
-    $td2 = $('<td>');
-    $td3 = $('<td>');
-    $td4 = $('<td>');
-    $tr = $('<tr>');
+  function deposit() {
+    var value = getAmount();
+    balance += value;
+    updateBalance();
+    addLedger(value, null, null);
+  }
 
-    $tr.append($td1, $td2, $td3, $td4);
+  function withdraw() {
+    var value = getAmount();
+    balance -= value;
+    var fee = balance < 0 ? 50 : null;
+    balance = fee ? balance - fee : balance;
+    updateBalance();
+    addLedger(null, value, fee);
+  }
+
+  function addLedger(deposit, withdraw, fee) {
+    var $tr = $('<tr>');
+    var $deposit = $('<td');
+    var withdraw = $('<td');
+    var $fee = $('<td');
+    var balance = $('<td');
+
+    $deposit.addClass('dep');
+    $withdraw.addClass('wd');
+    $fee.addClass('fee');
+
+    $deposit.text(formatCurrency(deposit));
+    $withdraw.text(formatCurrency(withdraw));
+    $fee.text(formatCurrency(fee));
+    $balance.text(formatCurrency(balance));
+
+    $tr.append($deposit, $withdraw, $fee, $balance);
+    $('#ledger > tbody').append($tr);
   }
 
 })();
