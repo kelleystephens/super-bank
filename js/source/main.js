@@ -4,33 +4,12 @@
 
   $(document).ready(initialize);
 
+  var balance = 1000;
+
   function initialize(){
     $('#deposit').click(deposit);
     $('#withdraw').click(withdraw);
   }
-
-  var balance = 1000;
-
-  function getAmount() {
-    var value = $('#input').val() * 1;
-    return value;
-  }
-
-function updateBalance() {
-  $('#balance').text('$' + balance + '.00');
-}
-
-function formatCurrency(amount) {
-  if(amount !== null) {
-    if(amount >= 0) {
-      return '$' + amount + '.00';
-    } else {
-      return '$('+ amount * -1 + '.00)';
-    }
-  }
-
-  return '';
-}
 
   function deposit() {
     var value = getAmount();
@@ -48,12 +27,33 @@ function formatCurrency(amount) {
     addLedger(null, value, fee);
   }
 
+  function getAmount() {
+    var value = $('#input').val() * 1;
+    return value;
+  }
+
+  function formatCurrency(amount) {
+    if(amount !== null) {
+      if(amount >= 0) {
+        return '$' + amount + '.00';
+      } else {
+        return '$('+ amount * -1 + '.00)';
+      }
+    }
+
+    return '';
+  }
+
+  function updateBalance() {
+    $('#display').text('$' + balance + '.00');
+  }
+
   function addLedger(deposit, withdraw, fee) {
     var $tr = $('<tr>');
-    var $deposit = $('<td');
-    var withdraw = $('<td');
-    var $fee = $('<td');
-    var balance = $('<td');
+    var $deposit = $('<td>');
+    var $withdraw = $('<td>');
+    var $fee = $('<td>');
+    var $balance = $('<td>');
 
     $deposit.addClass('dep');
     $withdraw.addClass('wd');
